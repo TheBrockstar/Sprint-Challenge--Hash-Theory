@@ -5,10 +5,49 @@
 
 Answer *get_indices_of_item_weights(int *weights, int length, int limit)
 {
-  HashTable *ht = create_hash_table(16);
-
   // YOUR CODE HERE
 
+  // Initiate Variables and Create Data Structures
+  HashTable *ht = create_hash_table(length);
+  int retrieved = 0;
+  int difference = 0;
+  int index = 0;
+
+  for (int i = 0; i < length; i++) {
+    // Store difference between limit and weight.
+    hash_table_insert(ht, weights[i], limit - weights[i]); 
+  }
+
+  for (int i = 0; i < length; i++) {
+    // Retrieve difference between the limit and the weight. 
+    difference = hash_table_retrieve(ht, weights[i]); 
+
+    // Attempt to find that difference as a key in the hash table.
+    retrieved = hash_table_retrieve(ht, difference);
+
+    // // If the difference was found as a weight, the answer is found.
+    if (retrieved >= 0) {
+      Answer *answer = malloc(sizeof(Answer));
+      for (int q = length - 1; q >= 0; q--) {
+        if (weights[q] == difference){
+
+          index = q;
+          break;
+        }
+      }
+      if (index > i) {
+        answer -> index_1 = index;
+        answer -> index_2 = i;
+      } else {
+        answer -> index_1 = i;
+        answer -> index_2 = index;
+      }
+
+      return answer;
+    }
+  }
+  
+  destroy_hash_table(ht);
   return NULL;
 }
 
